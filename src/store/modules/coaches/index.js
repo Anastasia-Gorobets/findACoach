@@ -27,10 +27,29 @@ export default {
     },
     mutations:{
 
+        addCoach(state,payload){
+            state.coaches.push(payload);
+        }
 
     },
 
     actions:{
+        addCoach(context,payload){
+
+            const coachData = {
+                id:context.rootGetters.userId,
+                firstName:payload.first,
+                lastName:payload.last,
+                areas:payload.areas,
+                description:payload.description,
+                hourlyRate:payload.rate,
+            }
+
+            context.commit('addCoach',coachData);
+
+        }
+
+
 
     },
     getters:{
@@ -41,6 +60,14 @@ export default {
 
         hasCoaches(state){
             return state.coaches.length > 0;
+        },
+
+        isCoach(_,getters, _2, rootGetters){
+            console.log(getters);
+            console.log(rootGetters.userId);
+
+            return getters.coaches.some(coach => coach.id === rootGetters.userId);
+
         }
 
     }
