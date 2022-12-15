@@ -5,7 +5,7 @@
 <section>
 <base-card>
     <div class="controls">
-      <base-button>Refresh</base-button>
+      <base-button @click="refresh">Refresh</base-button>
       <base-button v-if="!isCoach"  link to="/register">Register</base-button>
     </div>
 
@@ -62,6 +62,9 @@ export default {
     }
   },
 
+  created() {
+    this.refresh();
+  },
   methods:{
     applyFilter(updatedFilters){
 
@@ -71,11 +74,11 @@ export default {
 
      // this.$store.commit('coaches/filter',updatedFilters)
 
+    },
 
-
-
-
-    }
+    refresh(){
+      this.$store.dispatch('coaches/loadCoaches');
+    },
   }
 }
 </script>

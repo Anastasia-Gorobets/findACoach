@@ -3,7 +3,7 @@ export default {
     state() {
         return{
             coaches:[
-                {
+               /* {
                     id: 'c1',
                     firstName: 'Maximilian',
                     lastName: 'Schwarzmüller',
@@ -20,24 +20,53 @@ export default {
                     description:
                         'I am Julie and as a senior developer in a big tech company, I can help you get your first job or progress in your current role.',
                     hourlyRate: 30
-                }
+                }*/
             ]
         }
 
     },
     mutations:{
-
         addCoach(state,payload){
             state.coaches.push(payload);
-        }
+        },
 
+        setCoaches(state,payload){
+            state.coaches = payload;
+        }
     },
 
     actions:{
-        addCoach(context,payload){
 
+        async loadCoaches(context){
+
+           const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/coaches/.json');
+
+           const responseData = await response.json();
+
+           if(response.ok){
+
+               const coaches = [];
+               for (let key in responseData){
+                   const coach = {
+                       id: key,
+                       firstName:responseData[key].firstName,
+                       lastName:responseData[key].lastName,
+                       areas: responseData[key].areas,
+                       description:responseData[key].description,
+                       hourlyRate:responseData[key].hourlyRate
+                   };
+
+                   coaches.push(coach);
+               }
+               context.commit('setCoaches',coaches);
+           }
+
+        },
+
+       async addCoach(context,payload){
+
+            const userId = context.rootGetters.userId;
             const coachData = {
-                id:context.rootGetters.userId,
                 firstName:payload.first,
                 lastName:payload.last,
                 areas:payload.areas,
@@ -45,7 +74,21 @@ export default {
                 hourlyRate:payload.rate,
             }
 
-            context.commit('addCoach',coachData);
+
+           const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/coaches/'+userId+'.json', {
+                method:'PUT',
+                body:JSON.stringify(coachData)
+            }).then();
+
+            //const responseData = await response.json();
+
+            if(!response.ok){
+                //error...
+            }
+            context.commit('addCoach',{
+                ...coachData,
+                id:userId
+            });
 
         }
 
@@ -63,11 +106,8 @@ export default {
         },
 
         isCoach(_,getters, _2, rootGetters){
-            console.log(getters);
             console.log(rootGetters.userId);
-
             return getters.coaches.some(coach => coach.id === rootGetters.userId);
-
         }
 
     }
