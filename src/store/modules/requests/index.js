@@ -33,6 +33,10 @@ export default {
 
         requests(state){
             return state.requests;
+        },
+
+        requestsForCurrentUser(state, _,_2,rootGetters){
+            return state.requests.filter(request => request.coachId === rootGetters.userId);
         }
 
 
