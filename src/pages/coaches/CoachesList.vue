@@ -20,7 +20,8 @@
 
       </base-card>
     </section>
-    <base-dialog v-if="error"  show  @close="close">
+
+    <base-dialog :show="!!error" @close="close">
       <p>{{error}}</p>
     </base-dialog>
   </div>

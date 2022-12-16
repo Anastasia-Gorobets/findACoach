@@ -50,7 +50,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .backdrop {
   position: fixed;
   top: 0;
@@ -101,7 +101,7 @@ menu {
 .dialog-enter-from,
 .dialog-leave-to {
   opacity: 0;
-  transform: scale(0.8);
+  transform: scale(0.5);
 }
 
 .dialog-enter-active {

@@ -44,17 +44,11 @@ export default {
 
         async loadCoaches(context, payload){
 
-            console.log('context.getters.shouldUpdate');
-            console.log(context.getters.shouldUpdate);
-            console.log('payload.fetch');
-            console.log(payload.fetch);
-
-
             if(!context.getters.shouldUpdate && !payload.fetch){
                 return;
             }
 
-           const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/coaches/.jso');
+           const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/coaches/.json');
 
            const responseData = await response.json();
 
