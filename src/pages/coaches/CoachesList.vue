@@ -6,13 +6,17 @@
 <base-card>
     <div class="controls">
       <base-button @click="refresh">Refresh</base-button>
-      <base-button v-if="!isCoach"  link to="/register">Register</base-button>
+      <base-button v-if="!isCoach && !isLoading"  link to="/register">Register</base-button>
     </div>
 
-    <ul v-if="hasCoaches">
-      <coach-item :key="coach.id" v-for="coach in filteredCoaches" :id="coach.id" :rate="coach.hourlyRate" :areas="coach.areas" :first-name="coach.firstName" :last-name="coach.lastName"></coach-item>
-    </ul>
-    <h3 v-else>No coaches found</h3>
+    <base-spinner v-if="isLoading"></base-spinner>
+    <div v-else>
+      <ul v-if="hasCoaches">
+        <coach-item :key="coach.id" v-for="coach in filteredCoaches" :id="coach.id" :rate="coach.hourlyRate" :areas="coach.areas" :first-name="coach.firstName" :last-name="coach.lastName"></coach-item>
+      </ul>
+      <h3 v-else>No coaches found</h3>
+    </div>
+
 </base-card>
 </section>
 </template>
@@ -20,16 +24,19 @@
 <script>
 import CoachItem from "../../components/coaches/CoachItem";
 import CoachFilter from "../../components/coaches/CoachFilter";
+import BaseSpinner from "../../components/ui/BaseSpinner";
 export default {
   name: "Coaches",
-  components:{CoachItem,CoachFilter},
+  components:{BaseSpinner, CoachItem,CoachFilter},
   data(){
     return{
       activeFilters:{
         frontend:true,
         backend:true,
         career:true
-      }
+      },
+
+      isLoading:false,
     }
   },
   computed:{
@@ -54,7 +61,7 @@ export default {
 
     } ,
     hasCoaches(){
-      return this.$store.getters['coaches/hasCoaches'];
+      return !this.isLoading && this.$store.getters['coaches/hasCoaches'];
     },
 
     isCoach(){
@@ -63,21 +70,18 @@ export default {
   },
 
   created() {
+    this.isLoading = false;
     this.refresh();
   },
   methods:{
     applyFilter(updatedFilters){
-
-      console.log(updatedFilters);
-
       this.activeFilters = updatedFilters;
-
-     // this.$store.commit('coaches/filter',updatedFilters)
-
     },
 
-    refresh(){
-      this.$store.dispatch('coaches/loadCoaches');
+    async refresh(){
+      this.isLoading = true;
+      await this.$store.dispatch('coaches/loadCoaches');
+      this.isLoading = false;
     },
   }
 }
