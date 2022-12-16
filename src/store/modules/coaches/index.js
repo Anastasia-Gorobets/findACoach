@@ -2,8 +2,9 @@ export default {
     namespaced:true,
     state() {
         return{
+            lastFetch : null,
             coaches:[
-               /* {
+             /*   {
                     id: 'c1',
                     firstName: 'Maximilian',
                     lastName: 'Schwarzmüller',
@@ -32,16 +33,33 @@ export default {
 
         setCoaches(state,payload){
             state.coaches = payload;
+        },
+
+        setFetchTimestamp(state){
+            state.lastFetch = new Date().getTime();
         }
     },
 
     actions:{
 
-        async loadCoaches(context){
+        async loadCoaches(context, payload){
 
-           const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/coaches/.json');
+            console.log('context.getters.shouldUpdate');
+            console.log(context.getters.shouldUpdate);
+            console.log('payload.fetch');
+            console.log(payload.fetch);
+
+
+            if(!context.getters.shouldUpdate && !payload.fetch){
+                return;
+            }
+
+           const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/coaches/.jso');
 
            const responseData = await response.json();
+
+           console.log('response');
+           console.log(response);
 
            if(response.ok){
 
@@ -59,6 +77,17 @@ export default {
                    coaches.push(coach);
                }
                context.commit('setCoaches',coaches);
+               context.commit('setFetchTimestamp');
+           }else{
+
+
+               if(!response.ok){
+                   const error = new Error(responseData.message || 'Faild to fetch!');
+                   throw error;
+
+               }
+
+
            }
 
         },
@@ -74,16 +103,16 @@ export default {
                 hourlyRate:payload.rate,
             }
 
-
            const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/coaches/'+userId+'.json', {
                 method:'PUT',
                 body:JSON.stringify(coachData)
             }).then();
 
-            //const responseData = await response.json();
+           // const responseData = await response.json();
 
             if(!response.ok){
-                //error...
+                //const error = new Error(responseData.message || 'Faild to fetch!');
+
             }
             context.commit('addCoach',{
                 ...coachData,
@@ -108,6 +137,19 @@ export default {
         isCoach(_,getters, _2, rootGetters){
             console.log(rootGetters.userId);
             return getters.coaches.some(coach => coach.id === rootGetters.userId);
+        },
+
+        shouldUpdate(state){
+
+            const lastFetch = state.lastFetch;
+            if(!lastFetch){
+                return true;
+            }
+
+            const currentTime = new Date().getTime();
+
+            return (currentTime - lastFetch) / 1000 > 60; //more then 1 minute ago
+
         }
 
     }
