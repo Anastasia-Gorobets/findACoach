@@ -62,11 +62,16 @@ export default {
 
         async loadRequests(context){
 
-            const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/requests/.json');
+            const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/requests.json');
 
-            const responseData = await response.json();
+            console.log('response.ok=');
+            console.log(response.ok);
+
 
             if(response.ok){
+
+                const responseData = await response.json();
+
 
                 console.log('responseData');
                 console.log(responseData);
@@ -88,10 +93,9 @@ export default {
 
                 context.commit('setRequests',requests);
             }else{
-                if(!response.ok){
-                    const error = new Error(responseData.message || 'Faild to fetch!');
-                    throw error;
-                }
+                console.log('fff');
+                const error = new Error('Faild to fetch!');
+                throw error;
             }
         },
 

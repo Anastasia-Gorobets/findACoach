@@ -59,6 +59,7 @@ name: "RequestsReceive",
         this.isLoading = false;
       }catch (error){
         this.error = error || 'Faild to fetch';
+        this.isLoading = false;
       }
     },
 

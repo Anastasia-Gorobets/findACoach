@@ -73,14 +73,8 @@ export default {
                context.commit('setCoaches',coaches);
                context.commit('setFetchTimestamp');
            }else{
-
-
-               if(!response.ok){
-                   const error = new Error(responseData.message || 'Faild to fetch!');
-                   throw error;
-
-               }
-
+               const error = new Error(responseData.message || 'Faild to fetch!');
+               throw error;
 
            }
 

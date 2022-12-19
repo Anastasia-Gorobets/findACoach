@@ -95,6 +95,7 @@ export default {
       try{
         await this.$store.dispatch('coaches/loadCoaches', {'fetch':fetch});
       }catch (error){
+        console.log(error);
         this.error = error.message || 'Something went wrong';
       }
       this.isLoading = false;
