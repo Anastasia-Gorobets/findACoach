@@ -62,7 +62,9 @@ export default {
 
         async loadRequests(context){
 
-            const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/requests.json');
+            const token = context.rootGetters.token;
+
+            const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/requests.json?auth='+token);
 
             console.log('response.ok=');
             console.log(response.ok);

@@ -7,7 +7,9 @@
       <base-card>
         <div class="controls">
           <base-button @click="refresh(true)">Refresh</base-button>
-          <base-button v-if="!isCoach && !isLoading"  link to="/register">Register</base-button>
+          <base-button link v-if="!isLoggedIn" to="/auth?redirect=register">Login to Register as a Coach</base-button>
+          <base-button v-if="!isLoading && isLoggedIn"  link to="/register">Register</base-button>
+
         </div>
 
         <base-spinner v-if="isLoading"></base-spinner>
@@ -32,9 +34,10 @@ import CoachItem from "../../components/coaches/CoachItem";
 import CoachFilter from "../../components/coaches/CoachFilter";
 import BaseSpinner from "../../components/ui/BaseSpinner";
 import BaseDialog from "../../components/ui/BaseDialog";
+import BaseButton from "../../components/ui/BaseButton";
 export default {
   name: "Coaches",
-  components:{BaseDialog, BaseSpinner, CoachItem,CoachFilter},
+  components:{BaseButton, BaseDialog, BaseSpinner, CoachItem,CoachFilter},
   data(){
     return{
       activeFilters:{
@@ -48,6 +51,9 @@ export default {
     }
   },
   computed:{
+    isLoggedIn(){
+      return this.$store.getters.isAuth;
+    },
     filteredCoaches(){
       const coaches = this.$store.getters['coaches/coaches'];
 
@@ -82,6 +88,8 @@ export default {
     this.refresh();
   },
   methods:{
+
+
 
     close(){
       this.error = null;

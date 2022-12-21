@@ -91,7 +91,12 @@ export default {
                 hourlyRate:payload.rate,
             }
 
-           const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/coaches/'+userId+'.json', {
+           const token = context.rootGetters.token;
+
+            console.log(token);
+            console.log(context);
+
+           const response = await fetch('https://vue-http-791fd-default-rtdb.firebaseio.com/coaches/'+userId+'.json?auth='+token, {
                 method:'PUT',
                 body:JSON.stringify(coachData)
             }).then();
